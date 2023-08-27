@@ -2,6 +2,7 @@ package com.masai.entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,34 +14,40 @@ import jakarta.persistence.TemporalType;
 public class TransactionHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private double transaction_id;
+	private int transaction_id;
 
+	@Column(nullable = false)
 	private int car_id;
-	private int customer_id;
+		
 	@Temporal(TemporalType.DATE)
 	private LocalDate booking_date;
+
+	@Column(nullable = false)
 	private double distance;
+
+	@Column(nullable = false)
 	private double rate_per_km;
+
+	@Column(nullable = false)
 	private double total_rent;
 
 	public TransactionHistory() {
 		super();
 	}
 
-	public TransactionHistory(int car_id, int customer_id, double distance, double rate_per_km) {
+	public TransactionHistory(int car_id, double distance, double rate_per_km) {
 		super();
 		this.car_id = car_id;
-		this.customer_id = customer_id;
 		this.distance = distance;
 		this.rate_per_km = rate_per_km;
-		this.total_rent = distance * rate_per_km;
+		this.total_rent = Math.ceil(distance * rate_per_km);
 	}
 
-	public double getTransaction_id() {
+	public int getTransaction_id() {
 		return transaction_id;
 	}
 
-	public void setTransaction_id(double transaction_id) {
+	public void setTransaction_id(int transaction_id) {
 		this.transaction_id = transaction_id;
 	}
 
@@ -52,13 +59,6 @@ public class TransactionHistory {
 		this.car_id = car_id;
 	}
 
-	public int getCustomer_id() {
-		return customer_id;
-	}
-
-	public void setCustomer_id(int customer_id) {
-		this.customer_id = customer_id;
-	}
 
 	public LocalDate getBooking_date() {
 		return booking_date;
@@ -92,5 +92,11 @@ public class TransactionHistory {
 		this.total_rent = total_rent;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "\nTransaction_id:" + getTransaction_id() + "\n car_id:" + getCar_id()
+				+ "\n booking_date:" + getBooking_date() + "\n distance=" + getDistance() + "\n rate_per_km="
+				+ getRate_per_km() + "\n total_rent=" + getTotal_rent() + "";
+	}
+
 }

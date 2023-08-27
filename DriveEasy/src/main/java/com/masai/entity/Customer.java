@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,10 +19,20 @@ public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int customer_id;
+
+	@Column(nullable = false, unique = true)
 	private String username;
+
+	@Column(nullable = false)
 	private String password;
+
+	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = false)
 	private String phone_number;
+
+	@Column(nullable = false, unique = true)
 	private String email;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -95,6 +106,12 @@ public class Customer {
 
 	public void setTransactions(List<TransactionHistory> transactions) {
 		this.transactions = transactions;
+	}
+
+	@Override
+	public String toString() {
+		return "\n Customer_id:" + getCustomer_id() + "\n username:" + getUsername() + "\n password:" + getPassword() + "\n name:"
+				+ getName() + "\n phone_number:" + getPhone_number() + "\n email:" + getEmail() + "";
 	}
 	
 	
