@@ -9,26 +9,22 @@ public class MainUI {
 		do {
 			System.out.println("====    " + "Car Rental Project" + "    ====");
 
-			System.out.println("Enter 1 for new customer");
-			System.out.println("Enter 2 for Customer Login ");
-			System.out.println("Enter 3 for Admin Login ");
+			System.out.println("Enter 1 for customer");
+			System.out.println("Enter 2 for Admin ");
 			System.out.println("Enter 0 for Exit ");
-			System.out.println("Enter your choice : ");
+			System.out.print("Enter your choice : ");
 			try {
 
-				choice = sc.nextInt();
+				choice = Integer.valueOf(sc.nextLine());
 				switch (choice) {
 				case 1:
-					CustomerUI.newCustomerRegistration(sc);
+					CustomerUI.CustomerHomepage(sc);
 					break;
 				case 2:
-					CustomerUI.customerLogin(sc);
-					break;
-				case 3:
-					AdminUI.adminLogin(sc);
+					AdminUI.homepage(sc);
 					break;
 				case 0:
-					System.out.println("Thanks for using. ");
+					System.out.println("Thanks for using ");
 					break;
 				default:
 					System.out.println("Invalid choice");
@@ -36,7 +32,7 @@ public class MainUI {
 				}
 			} catch (Exception e) {
 				System.out.println("Invalid choice");
-				sc.next();
+				sc.nextLine();
 			}
 
 		} while (choice != 0);
