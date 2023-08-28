@@ -10,6 +10,7 @@ import com.masai.utils.EMUtils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 
 public class CustomerDaoImpl implements CustomerDao {
 	private static boolean login = false;
@@ -20,9 +21,6 @@ public class CustomerDaoImpl implements CustomerDao {
 
 	@Override
 	public void addnewCustomer(Customer customer) throws CustomException {
-		// Customer(String username, String password, String name, String phone_number,
-		// String email) {
-
 		EntityTransaction emt = null;
 		try (EntityManager em = EMUtils.getEntityManager()) {
 			emt = em.getTransaction();
@@ -36,33 +34,42 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public void customerLogin(Customer customer) throws CustomException {
+	public void customerLogin(String username, String password) throws CustomException {
 		try (EntityManager em = EMUtils.getEntityManager()) {
-			Customer find = em.find(Customer.class, customer.getCustomer_id());
-			if (find == null) {
-				throw new CustomException("Customer not login");
-			}
-			System.out.println("Customer added");
+			Query query = em.createQuery("Select c from Customer c where c.username=:username and c.password=:password",
+					Customer.class);
+			query.setParameter("username", username);
+			query.setParameter("password", password);
+
+			Customer find = (Customer) query.getSingleResult();
+
+			System.out.println("Welcome, " + find.getName());
+			System.out.println("Login successful");
+			System.out.println(find);
 		} catch (Exception e) {
-			throw new CustomException("Customers not login,Reason:" + e.getMessage());
+			throw new CustomException("Invalid details,Login failed ,Reason:" + e.getMessage());
 		}
 
 	}
 
 	@Override
-	public void changePassword(Customer customer) throws CustomException {
+	public void changePassword(String username, String password, String newPassword) throws CustomException {
 		EntityTransaction emt = null;
 		try (EntityManager em = EMUtils.getEntityManager()) {
-			Customer find = em.find(Customer.class, customer.getCustomer_id());
-			if (find == null) {
-				throw new CustomException("Customer not found");
+			Query query = em.createQuery("Select c from Customer c where c.username=:username and c.password=:password",
+					Customer.class);
+			query.setParameter("username", username);
+			query.setParameter("password", password);
+			Customer customer1 = (Customer) query.getSingleResult();
+			if (customer1 == null) {
+				throw new CustomException("Invalid details , Customer not found");
 			}
 			emt = em.getTransaction();
 			emt.begin();
-			find.setPassword(customer.getPassword());
-			em.merge(customer);
+			customer1.setPassword(newPassword);
+			em.merge(customer1);
 			emt.commit();
-			System.out.println("Customer password updated");
+			System.out.println("Password updated");
 		} catch (Exception e) {
 			emt.rollback();
 			throw new CustomException("Customers not found,Reason:" + e.getMessage());
@@ -71,17 +78,21 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public void changeEmail(Customer customer) throws CustomException {
+	public void changeEmail(String username, String password, String email) throws CustomException {
 		EntityTransaction emt = null;
 		try (EntityManager em = EMUtils.getEntityManager()) {
-			Customer find = em.find(Customer.class, customer.getCustomer_id());
-			if (find == null) {
-				throw new CustomException("Customer not found");
+			Query query = em.createQuery("Select c from Customer c where c.username=:username and c.password=:password",
+					Customer.class);
+			query.setParameter("username", username);
+			query.setParameter("password", password);
+			Customer customer1 = (Customer) query.getSingleResult();
+			if (customer1 == null) {
+				throw new CustomException("Invalid details , Customer not found");
 			}
 			emt = em.getTransaction();
 			emt.begin();
-			find.setEmail(customer.getEmail());
-			em.merge(customer);
+			customer1.setEmail(customer1.getEmail());
+			em.merge(customer1);
 			emt.commit();
 			System.out.println("Customer Email updated");
 		} catch (Exception e) {
@@ -92,27 +103,77 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public List<Car> viewAvailabeCar() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Car> viewAvailabeCar() throws CustomException {
+		try (EntityManager em = EMUtils.getEntityManager()) {
+			Query query = em.createQuery("Select c from Car c where c.isAvailable=true and c.isDeleted=false",
+					Car.class);
+			return (List<Car>) query.getResultList();
+		} catch (Exception e) {
+			throw new CustomException("No availabe car .Error:" + e.getMessage());
+		}
+
 	}
 
 	@Override
 	public void createTransaction(int car_id, int customer_id, double distance, double rate_per_km) {
-		// TODO Auto-generated method stub
+		EntityTransaction emt = null;
+		try (EntityManager em = EMUtils.getEntityManager()) {
+			Query query = em.createQuery(
+					"insert into TransactionHistory(car_id,customer_id,distance,rate_per_km) th values(:car_id,:customer_id,:distance,:rate_per_km)",
+					TransactionHistory.class);
+			query.setParameter("car_id", car_id);
+			query.setParameter("customer_id", customer_id);
+			query.setParameter("distance", distance);
+			query.setParameter("rate_per_km", rate_per_km);
+			emt = em.getTransaction();
+			emt.begin();
+			int row = query.executeUpdate();
+			if (row == 0) {
+				throw new CustomException("Invalid details , Transaction not found");
+			}
+			emt.commit();
+			changeAvailability(car_id);
+			System.out.println("Transaction successful");
+		} catch (Exception e) {
+			emt.rollback();
+			System.err.println(e.getMessage());
+		}
 
 	}
 
 	@Override
-	public void bookACar(Car car_id) {
-		// TODO Auto-generated method stub
+	public void changeAvailability(int car_id) throws CustomException {
+		EntityTransaction emt = null;
+		try (EntityManager em = EMUtils.getEntityManager()) {
+			Query query = em.createQuery("Select c from Car c where c.car_id=:car_id", Car.class);
+			emt = em.getTransaction();
+			emt.begin();
+			query.setParameter("car_id", car_id);
+			Car car = (Car) query.getSingleResult();
+			car.setAvailable(!car.isAvailable());
+			em.merge(car);
+			emt.commit();
+			System.out.println("Car availability updated");
+
+		} catch (Exception e) {
+			emt.rollback();
+			throw new CustomException("Invaild car id, .Error:" + e.getMessage());
+		}
 
 	}
 
 	@Override
-	public List<TransactionHistory> viewTransactionHistories() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TransactionHistory> viewTransactionHistories(int customer_id) throws CustomException {
+		try (EntityManager em = EMUtils.getEntityManager()) {
+			Query query = em.createQuery("Select a from TransactionHistory a where a.customer_id=:customer_id",
+					TransactionHistory.class);
+
+			query.setParameter("customer_id", customer_id);
+			return query.getResultList();
+		} catch (Exception e) {
+			throw new CustomException(e.getMessage());
+		}
 	}
+
 
 }

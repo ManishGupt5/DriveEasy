@@ -2,7 +2,6 @@ package com.masai.service;
 
 import com.masai.dao.CustomerDao;
 import com.masai.dao.CustomerDaoImpl;
-import com.masai.entity.Car;
 import com.masai.entity.Customer;
 
 public class CustomerServiceImpl implements CustomerService {
@@ -24,11 +23,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public void customerLogin(Customer customer) {
+	public void customerLogin(String username, String password) {
 		try {
 			CustomerDao dao = new CustomerDaoImpl();
-			dao.customerLogin(customer);
-			System.out.println("Login successfuly");
+			dao.customerLogin(username, password);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -39,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
 	public void viewAvailabeCar() {
 		try {
 			CustomerDao dao = new CustomerDaoImpl();
-			dao.viewAvailabeCar();
+			dao.viewAvailabeCar().forEach(System.out::println);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -58,24 +56,45 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public void bookACar(Car car_id) {
+	public void changeAvailability(int car_id) {
 		try {
 			CustomerDao dao = new CustomerDaoImpl();
-			dao.bookACar(car_id);
+			dao.changeAvailability(car_id);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
 	}
 
 	@Override
-	public void viewTransactionHistories() {
+	public void viewTransactionHistories(int car_id) {
 		try {
 			CustomerDao dao = new CustomerDaoImpl();
-			dao.viewTransactionHistories();
+			dao.viewTransactionHistories(car_id);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
 
 	}
 
+	@Override
+	public void changePassword(String username, String password, String newpassword) {
+		try {
+			CustomerDao dao = new CustomerDaoImpl();
+			dao.changePassword(username, password, newpassword);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+
+	}
+
+	@Override
+	public void changeEmail(String username, String password, String email) {
+		try {
+			CustomerDao dao = new CustomerDaoImpl();
+			dao.changePassword(username, password, email);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+
+	}
 }
