@@ -8,7 +8,7 @@ public class MainUI {
 		int choice = 0;
 		do {
 			System.out.println("====    " + "Car Rental Project" + "    ====");
-
+			System.out.println("Login Page");
 			System.out.println("Enter 1 for customer");
 			System.out.println("Enter 2 for Admin ");
 			System.out.println("Enter 0 for Exit ");
@@ -21,7 +21,7 @@ public class MainUI {
 					CustomerUI.CustomerHomepage(sc);
 					break;
 				case 2:
-					AdminUI.homepage(sc);
+					AdminUI.login(sc);
 					break;
 				case 0:
 					System.out.println("Thanks for using ");

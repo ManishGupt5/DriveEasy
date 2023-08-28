@@ -26,7 +26,6 @@ public class AdminDaoImpl implements AdminDao {
 			login = true;
 			System.out.println(admin);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new CustomException("Admin not found ,Error:" + e.getMessage());
 		}
 

@@ -13,25 +13,23 @@ public class AdminUI {
 		int choice = 0;
 		do {
 			System.out.println("====Admin MainPage====");
-			System.out.println("Enter 1:  Admin Login ");
+			System.out.println("Enter 1:  for add new Admin ");
 			System.out.println("Enter 2:  for add rental car ");
 			System.out.println("Enter 3:  for update car rent ");
 			System.out.println("Enter 4:  for delete car ");
-			System.out.println();
 			System.out.println("Enter 5:  for get car details by car id ");
 			System.out.println("Enter 6:  for get all car List ");
 			System.out.println("Enter 7:  for view all transactions ");
 			System.out.println("Enter 8:  for view transaction by car id ");
-			System.out.println();
 			System.out.println("Enter 9:  for change car active status by car id");
-			System.out.println("Enter 10: for add new Admin ");
 			System.out.println("Enter 0:  for Logout ");
+
 			System.out.print("Enter your choice : ");
 			try {
 				choice = Integer.valueOf(sc.nextLine());
 				switch (choice) {
 				case 1:
-					login(sc);
+					addnewAdmin(sc);
 					break;
 				case 2:
 					addCar(sc);
@@ -56,9 +54,6 @@ public class AdminUI {
 					break;
 				case 9:
 					changeActiveStatus(sc);
-					break;
-				case 10:
-					addnewAdmin(sc);
 					break;
 				case 0:
 					System.out.println("Thanks for using ,Logout successfuly ");
@@ -100,6 +95,8 @@ public class AdminUI {
 			String password = sc.nextLine();
 			AdminService serv = new AdminServiceImpl();
 			serv.login(username, password);
+
+			homepage(sc);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}

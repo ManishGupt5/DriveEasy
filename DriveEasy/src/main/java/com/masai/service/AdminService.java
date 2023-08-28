@@ -2,10 +2,12 @@ package com.masai.service;
 
 import com.masai.entity.Admin;
 import com.masai.entity.Car;
+import com.masai.exception.CustomException;
 
 public interface AdminService {
 	void addnewAdmin(Admin admin);
-	void login(String username ,String password);
+
+	void login(String username, String password) throws CustomException;
 	void addCar(Car car);
 	void updateCar(Car car);
 	void deleteCar(int car_id);

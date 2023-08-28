@@ -7,6 +7,7 @@ import com.masai.dao.AdminDaoImpl;
 import com.masai.entity.Admin;
 import com.masai.entity.Car;
 import com.masai.entity.TransactionHistory;
+import com.masai.exception.CustomException;
 
 public class AdminServiceImpl implements AdminService {
 
@@ -15,13 +16,10 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public void login(String username, String password) {
-		try {
-			AdminDao dao = new AdminDaoImpl();
-			dao.login(username, password);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
+	public void login(String username, String password) throws CustomException {
+
+		AdminDao dao = new AdminDaoImpl();
+		dao.login(username, password);
 
 	}
 
@@ -104,7 +102,6 @@ public class AdminServiceImpl implements AdminService {
 		}
 
 	}
-
 
 	@Override
 	public void changeActiveStatus(int car_id) {
