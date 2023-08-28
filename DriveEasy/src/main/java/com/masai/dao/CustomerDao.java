@@ -11,16 +11,18 @@ public interface CustomerDao {
 
 	void addnewCustomer(Customer customer) throws CustomException;
 
-	void customerLogin(Customer customer)throws CustomException;
+	void customerLogin(String username, String password) throws CustomException;
 
-	void changePassword(Customer customer) throws CustomException;
+	void changePassword(String username, String password, String newpassword) throws CustomException;
 
-	void changeEmail(Customer customer) throws CustomException;
-	List<Car> viewAvailabeCar();
-	
+	void changeEmail(String username, String password, String email) throws CustomException;
+
+	List<Car> viewAvailabeCar() throws CustomException;
+
 	void createTransaction(int car_id, int customer_id, double distance, double rate_per_km);
-	void bookACar(Car car_id);
-	List<TransactionHistory> viewTransactionHistories();
-	
+
+	void changeAvailability(int car_id) throws CustomException;
+
+	List<TransactionHistory> viewTransactionHistories(int customer_id) throws CustomException;
 
 }

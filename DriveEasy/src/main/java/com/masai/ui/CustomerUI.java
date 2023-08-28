@@ -2,6 +2,10 @@ package com.masai.ui;
 
 import java.util.Scanner;
 
+import com.masai.entity.Customer;
+import com.masai.service.CustomerService;
+import com.masai.service.CustomerServiceImpl;
+
 public class CustomerUI {
 
 	public static void CustomerHomepage(Scanner sc) {
@@ -14,7 +18,7 @@ public class CustomerUI {
 			System.out.println("Enter 0:  Back ");
 			System.out.println("Enter your choice : ");
 			try {
-				choice = sc.nextInt();
+				choice = Integer.valueOf(sc.nextLine());
 				switch (choice) {
 				case 1:
 					addnewCustomer(sc);
@@ -37,6 +41,45 @@ public class CustomerUI {
 		} while (choice != 0);
 	}
 
+	public static void customerLogin(Scanner sc) {
+		try {
+			System.out.println("Enter username:");
+			String username = sc.nextLine();
+			System.out.println("Enter password:");
+			String password = sc.nextLine();
+
+			CustomerService serv = new CustomerServiceImpl();
+			serv.customerLogin(username, password);
+
+			CustomerMainPage(sc);
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public static void addnewCustomer(Scanner sc) {
+		try {
+			System.out.println("Enter username:");
+			String username = sc.nextLine();
+			System.out.println("Enter password:");
+			String password = sc.nextLine();
+			System.out.println("Enter name:");
+			String name = sc.nextLine();
+			System.out.println("Enter phone number:");
+			String phone_number = sc.nextLine();
+			System.out.println("Enter email :");
+			String email = sc.nextLine();
+
+			Customer customer = new Customer(username, password, name, phone_number, email);
+			CustomerService serv = new CustomerServiceImpl();
+			serv.addnewCustomer(customer);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+
+	}
+
 	public static void CustomerMainPage(Scanner sc) {
 		int choice = 0;
 		do {
@@ -46,6 +89,7 @@ public class CustomerUI {
 			System.out.println("Enter 3:  View transaction history ");
 			System.out.println("Enter 4:  for Change password ");
 			System.out.println("Enter 5:  for update Email ");
+			System.out.println("Enter 6: End trip ");
 			System.out.println("Enter 0:  Logout ");
 			System.out.println("Enter your choice : ");
 			try {
@@ -58,7 +102,7 @@ public class CustomerUI {
 					createTransaction(sc);
 					break;
 				case 3:
-					viewTransactionHistories();
+					viewTransactionHistories(sc);
 					break;
 				case 4:
 					changePassword(sc);
@@ -79,38 +123,104 @@ public class CustomerUI {
 
 		} while (choice != 0);
 	}
-	
-	public static void addnewCustomer(Scanner sc) {
-//		Customer customer
-	}
+
+
 
 	public static void changeEmail(Scanner sc) {
-//		Customer customer
-	}
-	
-	public static void changePassword(Scanner sc) {
-//		Customer customer
+		try {
+			System.out.println("Enter username:");
+			String username = sc.nextLine();
+			System.out.println("Enter password:");
+			String password = sc.nextLine();
+
+			System.out.println("Enter new email :");
+			String email = sc.nextLine();
+
+			CustomerService serv = new CustomerServiceImpl();
+			serv.changeEmail(username, password, email);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
-	
-	public static void customerLogin(Scanner sc) {
-//		Customer customer
+	public static void changePassword(Scanner sc) {
+		try {
+			System.out.println("Enter username:");
+			String username = sc.nextLine();
+			System.out.println("Enter password:");
+			String password = sc.nextLine();
+
+			System.out.println("Enter new password :");
+			String newPassword = sc.nextLine();
+
+			CustomerService serv = new CustomerServiceImpl();
+			serv.changePassword(username, password, newPassword);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
+
+
 
 	public static void viewAvailabeCar() {
-
+		try {
+			CustomerService serv = new CustomerServiceImpl();
+			serv.viewAvailabeCar();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}// order by rate
 
 	public static void createTransaction(Scanner sc) {
-//		int car_id, int customer_id, double distance, double rate_per_km
+		sc.nextLine();
+		System.out.println("Enter car id:");
+		int car_id = Integer.valueOf(sc.nextLine());
+		System.out.println("Enter customer id:");
+		int customer_id = Integer.valueOf(sc.nextLine());
+		System.out.println("enter distance:");
+		double distance = Double.valueOf(sc.nextLine());
+		System.out.println("Enter rate per km");
+		double rate_per_km = Double.valueOf(sc.nextLine());
+		try {
+			CustomerService serv = new CustomerServiceImpl();
+			serv.createTransaction(car_id, customer_id, distance, rate_per_km);
+
+			changeAvailability(car_id);
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
-	public static void bookACar(Scanner sc) {
-//		Car car_id
-	}// changing availibility
+	public static void endTrip(Scanner sc) {
+		System.out.println("Enter car id");
+		int car_id = Integer.valueOf(sc.nextLine());
+		try {
+			CustomerService serv = new CustomerServiceImpl();
+			serv.changeAvailability(car_id);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
 
-	public static void viewTransactionHistories() {
+	public static void changeAvailability(int car_id) {
+		try {
+			CustomerService serv = new CustomerServiceImpl();
+			serv.changeAvailability(car_id);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
 
+	public static void viewTransactionHistories(Scanner sc) {
+		try {
+			CustomerService serv = new CustomerServiceImpl();
+			System.out.println("Enter customer id");
+			int customer_id = Integer.valueOf(sc.nextLine());
+			serv.viewTransactionHistories(customer_id);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}// order by date desc
 
 }
